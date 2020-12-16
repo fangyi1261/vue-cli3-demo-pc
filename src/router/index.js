@@ -1,27 +1,65 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
 
-Vue.use(VueRouter)
+import store from '@/vuex';
+import homeRoutes from './home.js';
+import Home from '@/views/Home.vue';
+import Main from '@/views/main/Index.vue';
 
-const routes = [
+// eslint-disable-next-line no-unused-vars
+import getMenus from '../utils/requestMenu';
+
+Vue.use(VueRouter);
+
+export const constantRouterMap = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home
+    path: '/login',
+    name: 'login',
+    component: () => import('@/views/Login.vue')
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    path: '/404',
+    name: '404',
+    component: () => import('@/views/404.vue')
+  },
+  {
+    path: '/',
+    component: Home,
+    children: [
+      {
+        path: '/',
+        name: 'main',
+        value: '空白页',
+        hidden: false,
+        icon: 'news',
+        component: Main
+      },
+      ...homeRoutes
+    ]
   }
-]
+];
 
 const router = new VueRouter({
-  routes
-})
+  routes: constantRouterMap
+});
 
-export default router
+// 本地开发注释
+// router.beforeEach(async (to, from, next) => {
+//   getMenus(to, from, next);
+// });
+
+router.afterEach(to => {
+  const path = to.path;
+  const navList = store.getters.navs;
+  const flag = navList.some(_nav => _nav.path === path);
+
+  if (!flag) {
+    const nav = homeRoutes.filter(_route => _route.path === path)[0];
+
+    if (nav) {
+      store.dispatch('addNav', nav);
+    }
+  }
+});
+
+export default router;
