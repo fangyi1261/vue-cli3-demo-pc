@@ -12,6 +12,10 @@
   .home-welcome {
     padding: 20px;
     font-size: 24px;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    text-align: left;
 
     .line {
       padding-left: 30px;
