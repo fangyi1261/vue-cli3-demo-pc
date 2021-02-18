@@ -15,7 +15,7 @@ export const constantRouterMap = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('@/views/Login.vue')
+    component: () => import('@/views/LoginCopy.vue')
   },
   {
     path: '/404',
@@ -43,10 +43,11 @@ const router = new VueRouter({
   routes: constantRouterMap
 });
 
-// 本地开发注释
-// router.beforeEach(async (to, from, next) => {
-//   getMenus(to, from, next);
-// });
+if (process.env.NODE_ENV !== 'development') {
+  router.beforeEach(async (to, from, next) => {
+    getMenus(to, from, next);
+  });
+}
 
 router.afterEach(to => {
   const path = to.path;

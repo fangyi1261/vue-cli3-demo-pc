@@ -1,93 +1,90 @@
+/* eslint-disable no-unused-vars */
 import axios from 'axios';
-import querystring from 'querystring';
+import qs from 'querystring';
 
 import { getToken, getClientId } from '../utils/cookie';
 
 export const CancelToken = axios.CancelToken;
 
-const env = process.env.NODE_ENV;
-
 // 是否开发模式
-export const isDev = env === 'development';
+export const isDev = process.env.NODE_ENV === 'development';
 
-export const getRequest = url => {
-  const server = {
-    request: function(params) {
-      const source = CancelToken.source();
-      const token = getToken();
-      const clientId = getClientId();
-      const instance = axios.create({
-        baseURL: url,
-        headers: {
-          'K-Access-Token': token,
-          'K-Client': `id: ${clientId}`
-        },
-        cancelToken: source.token
-      });
+const baseUrl = isDev ? 'http://10.28.63.9:8080' : window.location.origin;
 
-      this.cancel = source.cancel;
-      const reqUrl = `${url}?${querystring.stringify(params)}`;
+const http = {
+  // eslint-disable-next-line no-unused-vars
+  get: function(url, params = {}, context) {
+    const source = CancelToken.source();
+    const token = getToken();
+    const clientId = getClientId();
+    const instance = axios.create({
+      baseURL: baseUrl,
+      headers: {
+        'K-Access-Token': token,
+        'K-Client': `id: ${clientId}`
+      },
+      cancelToken: source.token
+    });
 
-      return instance
-        .get(reqUrl)
-        .then(res => res.data)
-        .then(data => {
-          if (data.status === '00' || data.status === 200) {
-            return data.result;
+    return new Promise((resolve, reject) => {
+      url += '?';
+      const userToken = '';
+
+      if (userToken) {
+        url += `&userToken=${userToken}`;
+      }
+      url += qs.stringify(params) + '&tomesTamp=' + new Date().getTime();
+      url = encodeURI(url);
+      instance.get(url).then(res => {
+        if (res.status === 200) {
+          if (res.data.status === '00' || res.data.status === 200) {
+            resolve(res.data);
           } else {
-            // eslint-disable-next-line no-useless-escape
-            if (/^<([a-z]+)([^<])*(?:>(.*)<\/\1>|\s+\>)$/.test(data)) {
+            if (/^([a-z]+)([^<])*(?:>(.*)<\/\1>|\s+>)$/.test(res.data)) {
               window.location.replace(`http://${window.location.host}/caslogout`);
             } else {
-              throw new Error(data.message || '获取数据发生错误');
+              reject(res.data.message || '获取数据发生错误');
             }
           }
-        });
-    },
-    cancel: null
-  };
-
-  return server;
-};
-
-export const postRequest = url => {
-  const server = {
-    request: function(params) {
-      // eslint-disable-next-line no-param-reassign
-      params = params || {};
-      const source = CancelToken.source();
-      const token = getToken();
-      const clientId = getClientId();
-      const instance = axios.create({
-        baseURL: url,
-        headers: {
-          'K-Access-Token': token,
-          'K-Client': `id: ${clientId}`
-        },
-        cancelToken: source.token
+        } else {
+          reject(res.statusText);
+        }
       });
+    });
+  },
+  post: function(url, params = {}, context) {
+    const source = CancelToken.source();
+    const token = getToken();
+    const clientId = getClientId();
 
-      this.cancel = source.cancel;
-      const reqUrl = `${url}`;
+    const headers = {
+      'K-Access-Token': token,
+      'K-Client': `id: ${clientId}`
+    };
+    const instance = axios.create({
+      baseURL: baseUrl,
+      headers: headers,
+      cancelToken: source.token
+    });
 
-      return instance
-        .post(reqUrl, params)
-        .then(res => res.data)
-        .then(data => {
-          if (data.status === '00' || data.status === 200) {
-            return data.result;
+    return new Promise((resolve, reject) => {
+      instance.post(url, params).then(res => {
+        if (res.status === 200) {
+          if (res.data.status === '00' || res.data.status === 200) {
+            resolve(res.data);
           } else {
-            // eslint-disable-next-line no-useless-escape
-            if (/^<([a-z]+)([^<])*(?:>(.*)<\/\1>|\s+\>)$/.test(data)) {
+            if (/^([a-z]+)([^<])*(?:>(.*)<\/\1>|\s+>)$/.test(res.data)) {
               window.location.replace(`http://${window.location.host}/caslogout`);
             } else {
-              throw new Error(data.message || '获取数据发生错误');
+              reject(res.data.message || '获取数据发生错误');
             }
           }
-        });
-    },
-    cancel: null
-  };
-
-  return server;
+        } else {
+          reject(res.statusText);
+        }
+      });
+    });
+  }
 };
+
+export default http;

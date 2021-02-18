@@ -8,7 +8,7 @@ export default {
     roles: [],
     userId: null,
     userName: '管理员',
-    umAccount: ''
+    umAccount: 'test002'
   },
   mutations: {
     SET_TOKEN(state, token) {
@@ -39,7 +39,7 @@ export default {
       commit('SET_TOKEN', token);
     },
     goLogin({ commit }, userInfo) {
-      return ComAPI.goLogin.request(userInfo)
+      return $http.post(ComAPI.goLogin, userInfo)
         .then(res => {
           console.log('====== 用户信息 ======：', res);
           // 登陆成功后将token存储在cookie中
@@ -57,26 +57,32 @@ export default {
       commit('REMOVE_ROLES');
       return yes;
     },
-    async getUserInfo({ commit }) {
-      const username = getUserName();
+    getUserInfo({ commit }) {
+      return new Promise((resolve, reject) => {
+        const username = getUserName();
 
-      try {
-        const result = await ComAPI.getUserInfo.request({ username });
-        const { roles, userId, userName } = result;
+        $http.post(ComAPI.getUserInfo, { username }).then(result => {
 
-        commit('SET_ROLES', roles);
-        commit('SET_USER_ID', userId);
-        commit('SET_USER_NAME', userName);
-        return result;
-      } catch (error) {
-        console.log('===== 获取用户信息失败 ======', error);
-      }
+          const { roles, userId, userName } = result;
+
+          commit('SET_ROLES', roles);
+          commit('SET_USER_ID', userId);
+          commit('SET_USER_NAME', userName);
+          resolve(result);
+        }).catch(error => {
+          reject(error);
+        });
+      });
     },
-    async getUmAccount({ commit }) {
-      const result = await ComAPI.getUserAccount.request();
-
-      commit('SET_UM_ACCOUNT', result);
-      return result;
+    getUmAccount({ commit }) {
+      return new Promise((resolve, reject) => {
+        $http.post(ComAPI.getUserAccount).then(result => {
+          commit('SET_UM_ACCOUNT', result.result);
+          resolve(result);
+        }).catch(error => {
+          reject(error);
+        });
+      });
     }
   }
 };

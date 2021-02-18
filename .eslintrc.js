@@ -25,7 +25,7 @@ module.exports = {
     'generator-star-spacing': 'off',
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'no-param-reassign': ['error', { //禁止给参数重新赋值
+    'no-param-reassign': ['off', { //禁止给参数重新赋值
       props: true,
       ignorePropertyModificationsFor: [
         'state', // for vuex state
@@ -119,5 +119,9 @@ module.exports = {
     "wrap-iife": [2, "inside"],//立即执行函数表达式的小括号风格
     "wrap-regex": 0,//正则表达式字面量用小括号包起来
     "vue/singleline-html-element-content-newline": "off"
+  },
+  globals: {
+    process: true,
+    $http: true
   }
 }

@@ -6,7 +6,7 @@ export const routesMap = {
     {
       path: '/demo', // 路径
       name: 'demo', // 名称
-      value: '测试页面', // 标题
+      value: '测试页面1', // 标题
       component: () => import('@/views/demo/Home.vue')
     },
     {

@@ -19,6 +19,11 @@ module.exports = {
   transpileDependencies: [], // 默认babel-loader忽略mode_modules，这里可增加例外的依赖包名
   // eslint-disable-next-line no-unused-vars
   chainWebpack: config => { // webpack链接API，用于生成和修改webapck配置，see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
+    config.plugin('html').tap((args) => {
+      args[0].title = 'PC--管理系统';
+      return args;
+    });
+
     if (debug) {
       // 本地开发配置
     } else {
@@ -33,6 +38,16 @@ module.exports = {
       .set('@c', path.resolve(__dirname, './src/components'))
       .set('@p', path.resolve(__dirname, './src/pages'))
       .set('jquery$', 'jquery/dist/jquery.min.js');
+
+    const fileRule = config.module.rule('file');
+    fileRule.uses.clear()
+    fileRule
+        .test(/\.pdf|ico$/)
+        .use('file-loader')
+        .loader('file-loader')
+        .options({
+            limit: 10000,
+        })
   },
   configureWebpack: config => { // webpack配置，值位对象时会合并配置，为方法时会改写配置
     if (debug) { // 开发环境配置

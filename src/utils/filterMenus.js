@@ -1,15 +1,16 @@
-export function filterMenu(val, menus) {
-  let newMenus = [];
-  let newRoutes = [];
-  // 得到一级菜单
+export function filterMenu(lists, menus) { // lists - 接口返回路由 menus - 本地配置路由
+  const newMenus = [];
 
-  val.forEach((items, indexs) => {
-    menus.forEach((vals, keys) => {
-      items.children.forEach((item, index) => {
-        vals.children.forEach((val, key) => {
-          if (item.url === url.name) {
-            newMenus.push(vals);
-            newRoutes.push(val);
+  const newRoutes = [];
+
+  // 得到一级菜单
+  lists.forEach(list => {
+    menus.forEach(menu => {
+      list.children.forEach(item => {
+        menu.children.forEach(child => {
+          if (item.url === child.name) {
+            newMenus.push(menu);
+            newRoutes.push(child);
           }
         });
       });
@@ -17,7 +18,7 @@ export function filterMenu(val, menus) {
   });
 
   // 二级菜单
-  let newMenusList = [...new Set(newMenus)];
+  const newMenusList = [...new Set(newMenus)];
 
   newMenusList.forEach(items => {
     let loop = items.children.length;
@@ -25,8 +26,8 @@ export function filterMenu(val, menus) {
     for (let i = 0; i < loop; i++) {
       if (newRoutes.indexOf(items.children[i]) === -1) {
         items.children.splice(i, 1);
-        i = i - 1;
-        loop = loop - 1;
+        i--;
+        loop--;
       }
     }
   });

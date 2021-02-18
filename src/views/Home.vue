@@ -2,15 +2,30 @@
   <el-container class="home-view">
     <el-aside :width="isCollapse ? '54px' : '190px'">
       <div class="ae-title">
-        <img src="../assets/logo.png" alt="" class="ae-title-img" v-if="!isCollapse">
+        <img class="ae-title-img" src="../assets/logo.jpeg" alt="" v-show="!isCollapse">
       </div>
-      <el-menu class="ae-menu" :default-active="$route.path" mode="vertical" :collapse="isCollapse" :collapse-transition="false" router>
-        <el-submenu v-for="route in routes" :key="route.index" :index="route.index" :show-timeout="50" :hide-timeout="50">
+      <el-menu class="ae-menu"
+        mode="vertical"
+        :default-active="$route.path"
+        :collapse="isCollapse"
+        :collapse-transition="false"
+        router>
+        <el-submenu
+          v-for="route in routes"
+          :index="route.index"
+          :key="route.index"
+          :show-timeout="50"
+          :hide-timeout="50">
           <template slot="title">
             <i :class="route.icon"></i>
             <span v-if="!isCollapse" slot="title">{{route.text}}</span>
           </template>
-          <el-menu-item v-for="item in route.children" :index="item.path" :key="item.name">{{item.value}}</el-menu-item>
+          <el-menu-item
+            v-for="item in route.children"
+            :index="item.path"
+            :key="item.name">
+            {{item.value}}
+          </el-menu-item>
         </el-submenu>
       </el-menu>
     </el-aside>
@@ -19,15 +34,16 @@
         <div class="home-view-head">
           <div class="home-view-head-system left">
             <div class="optionImg" @click="collapseMenu">
-              <img :src="isCollapse ? require('../assets/logo.png') : ''" alt="" style="width: 20px; height: 20px; vertical-align: text-top">
+              <img :src="isCollapse ? require('../assets/menuL.png') : require('../assets/menuR.png')"
+                alt="" style="width: 20px; height: 20px; vertical-align: text-top">
             </div>
-            <span class="home-title">主页内容</span>
+            <span class="home-title">后台管理系统</span>
           </div>
           <div class="home-view-head-user right">
             <span class="current-time">当前时间：{{currentTime}}</span>
             <el-dropdown trigger="hover">
               <div class="el-dropdown-link">
-                <img class="user-image" src="../assets/logo.png" alt="" style="width: 32px; height: 32px;">
+                <img class="user-image" src="../assets/user.png" alt="" style="width: 32px; height: 32px;">
                 <span class="user-name">{{umAccount}}</span>
                 <i class="el-icon-caret-bottom"></i>
               </div>
@@ -38,7 +54,12 @@
           </div>
         </div>
         <div ref="navCards">
-          <draggable class="nav-cards" :options="{animation: '500'}" draggable="true" :move="getdata" @update="datadragEnd">
+          <draggable class="nav-cards"
+            v-model="navs"
+            :options="{animation: 500, disabled: true}"
+            draggable
+            :move="getdata"
+            @update="datadragEnd">
             <div class="nav-card" v-for="(nav, index) in navs" :key="nav.path" :class="nav.path===$route.path ? 'active' : ''">
               <router-link class="nav-card-link" :to="nav.path" :draggable="false">{{nav.value}}</router-link>
               <i class="el-icon-close" @click="removeTab(nav.path, index)"></i>
@@ -59,7 +80,6 @@
 import draggable from 'vuedraggable';
 // import Cookies from 'js-cookie';
 import { mapGetters, mapActions } from 'vuex';
-import { menus } from '@/router/home';
 
 export default {
   name: 'home',
@@ -70,14 +90,11 @@ export default {
     return {
       isCollapse: true,
       currentTime: null,
-      routes: menus, // 线上这个注释
       i: 0
     };
   },
   computed: {
-    // ...mapGetters(['userName', 'homeRouters', 'navs', 'routes', 'umAccount'])
-    // 本地启用下面
-    ...mapGetters(['userName', 'homeRouters', 'navs', 'umAccount'])
+    ...mapGetters(['userName', 'homeRouters', 'navs', 'routes', 'umAccount'])
 
   },
   created() {
@@ -126,6 +143,7 @@ export default {
       return menuList;
     },
     getdata(evt) {
+      debugger;
       console.log(evt);
     },
     datadragEnd(eve) {
@@ -153,7 +171,7 @@ export default {
   $HEADHEIGHT: 80px;
   $HEADBORDERBOTTOM: 2px;
 
-  $pre: '.home-view';
+  $pre: 'home-view';
   .el-menu--vertical .el-menu--popup{
     background-color: #304156 !important;
     border-radius: 5px;
@@ -171,7 +189,10 @@ export default {
     }
   }
 
-  #{$pre} {
+  .home-view {
+    position: relative;
+    width: 100%;
+    height: 100%;
     .slide-fade-enter-active {
       transition: all .8s ease;
     }
@@ -186,9 +207,6 @@ export default {
       opacity: 0;
     }
 
-    position: relative;
-    width: 100%;
-    height: 100%;
 
     // 侧边栏导航
     .ae-title {
@@ -197,7 +215,7 @@ export default {
       justify-content: center;
       height: 62px;
       &-img {
-        width: 180px;
+        width: 100%;
         height: auto;
       }
     }
@@ -371,7 +389,7 @@ export default {
     .inner-container {
       position: relative;
       min-width: 940px;
-      height: 940px;
+      // height: 100%;
     }
     .el-main {
       position: absolute;

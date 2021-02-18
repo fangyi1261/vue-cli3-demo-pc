@@ -1,26 +1,26 @@
-const ADD = 'ADD_NAV';
-const DEL = 'DEL_NAV';
+const ADD_NAV = 'ADD_NAV';
+const DEL_NAV = 'DEL_NAV';
 
-const navs = {
+const navList = {
   state: {
-    navs: []
+    navLists: []
   },
   mutations: {
-    [ADD](state, nav) {
-      state.navs = [...state.navs, nav];
+    [ADD_NAV](state, nav) {
+      state.navLists = [...state.navLists, nav];
     },
-    [DEL](state, index) {
-      state.navs.splice(index, 1);
+    [DEL_NAV](state, index) {
+      state.navLists.splice(index, 1);
     }
   },
   actions: {
     addNav({ commit }, nav) {
-      commit(ADD, nav);
+      commit(ADD_NAV, nav);
     },
     delNav({ commit }, index) {
-      commit(DEL, index);
+      commit(DEL_NAV, index);
     }
   }
 };
 
-export default navs;
+export default navList;

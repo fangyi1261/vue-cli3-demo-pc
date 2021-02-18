@@ -4,8 +4,6 @@ import ComAPI from '@/api/common';
 
 import { filterMenu } from '@/utils/filterMenus';
 
-const server = ComAPI.getMenus;
-
 const permission = {
   state: {
     routers: constantRouterMap,
@@ -13,7 +11,7 @@ const permission = {
     homeRouters: [],
     hasPermissionMenu: ['/'],
     // times: 0,
-    routes: []
+    routes: menus
   },
   mutations: {
     SET_ROUTERS: (state, homeRouters) => {
@@ -30,11 +28,11 @@ const permission = {
   },
   actions: {
     async generateRoutes({ commit }) {
-      const res = await server.request();
+      const res = await $http.post(ComAPI.getMenus);
 
       // 拿到所有菜单url数组集合
-      const menuList = res;
-      const val = res;
+      const menuList = res.result;
+      const val = res.result;
 
       const list = [];
 
@@ -48,7 +46,7 @@ const permission = {
 
       commit('SET_MENUS', afterRouteList);
       commit('SET_ROUTERS', list);
-      return res;
+      return res.result;
     }
   }
 };

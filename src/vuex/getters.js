@@ -13,7 +13,7 @@ const getters = {
   routes: state => state.permit.routes,
 
   // 标签导航
-  navs: state => state.navs.navs,
+  navs: state => state.navs.navLists,
   activeNav: state => state.navs.activeNav
 };
 
