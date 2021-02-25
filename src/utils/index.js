@@ -53,8 +53,6 @@ export function stringHasData(string) {
 // 对象是否有值
 export function objectHasData(object) {
   let length = 0;
-
-  // eslint-disable-next-line no-unused-vars
   for (const key in object) {
     length++;
   }
@@ -89,31 +87,59 @@ export function numFormat(num) {
 }
 
 /**
-* 防抖函数
+* 防抖函数 => 在连续的时间段内只执行一次 “fn” 函数（只执行一次）
 * @param fn {Function}   实际要执行的函数
 * @param delay {Number}  延迟时间，也就是阈值，单位是毫秒（ms）
 *
 * @return {Function}     返回一个“去弹跳”了的函数
 */
-export function debounce(fn, delay) {
+export function debounce(fn, delay=200) {
 
   // 定时器，用来 setTimeout
-  var timer;
+  let timer;
 
   // 返回一个函数，这个函数会在一个时间区间结束后的 delay 毫秒时执行 fn 函数
   return function () {
 
     // 保存函数调用时的上下文和参数，传递给 fn
-    var context = this;
-    var args = arguments;
+    let context = this, args = arguments;
 
     // 每次这个返回的函数被调用，就清除定时器，以保证不执行 fn
-    clearTimeout(timer);
-
+    if(timer) {
+      clearTimeout(timer);
+    }
     // 当返回的函数被最后一次调用后（也就是用户停止了某个连续的操作），
     // 再过 delay 毫秒就执行 fn
     timer = setTimeout(function () {
       fn.apply(context, args);
     }, delay);
   };
+}
+
+/**
+* 节流函数 => 在规定 “fn” 函数以固定速率执行（执行多次）
+* @param fn {Function}   实际要执行的函数
+* @param threshold {Number}  延迟时间，也就是阈值，单位是毫秒（ms）
+*
+* @return {Function}     返回一个“节流”了的函数
+*/
+export function throttle(fn, threshold=250) {
+  let last, timer; // last 上次执行的时间
+
+  return function () {
+    let context = this, args = arguments;
+
+    let now = +new Date();
+
+    if (last && now < last + threshold) {
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        last = now;
+        fn.apply(context, args)
+      }, threshold);
+    } else {
+      last = now;
+      fn.apply(context, args);
+    }
+  }
 }

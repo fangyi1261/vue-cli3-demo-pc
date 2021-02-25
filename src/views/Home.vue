@@ -56,7 +56,7 @@
         <div ref="navCards">
           <draggable class="nav-cards"
             v-model="navs"
-            :options="{animation: 500, disabled: true}"
+            v-bind="{animation: 500, disabled: true}"
             draggable
             :move="getdata"
             @update="datadragEnd">
@@ -102,11 +102,14 @@ export default {
 
     this.currentTime = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
     this.menuList();
-    this.$store.dispatch('getUmAccount').then(res => {
-      if (res === '未知用户') {
-        console.log();
-      }
-    });
+    if (process.env.NODE_ENV !== 'development') {
+      this.$store.dispatch('getUmAccount').then(res => {
+        if (res === '未知用户') {
+          console.log();
+        }
+      });
+
+    }
   },
   methods: {
     ...mapActions(['delNav', 'addNav', 'changeNav']),
