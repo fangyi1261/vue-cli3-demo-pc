@@ -52,3 +52,35 @@ const permission = {
 };
 
 export default permission;
+
+/**
+  res = {
+    status: '00',
+    message: null,
+    result: [
+      {
+        id: null,
+        menuName: '配置管理',
+        menuCode: 'setting-administration',
+        url: 'setting-administration',
+        menuDescription: null,
+        menuLevel: 1,
+        parentMenuCode: 'root',
+        sortNum: 1,
+        children: [
+          {
+            id: null,
+            menuName: '',
+            menuCode: '',
+            url: '',
+            menuDescription: null,
+            menuLevel: 2,
+            parentMenuCode: 'setting-administration',
+            sortNum: 1,
+            children: []
+          }
+        ]
+      }
+    ]
+};
+*/
