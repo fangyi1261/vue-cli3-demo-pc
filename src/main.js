@@ -14,6 +14,8 @@ import '@/style/reset.scss';
 
 import 'animate.css';
 
+import '@/api/common/mock.js';
+
 Vue.use(ElementUI);
 
 Vue.config.productionTip = false;
