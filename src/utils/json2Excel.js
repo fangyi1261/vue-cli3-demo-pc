@@ -7,6 +7,7 @@ import XLSX from 'xlsx';
  * @param {*} xlsxName 导出表格名
  */
 export default function json2Excel(headerTitle, data, xlsxName) {
+  data = JSON.parse(JSON.stringify(data));
   data.forEach(item => {
     for (const key in item) {
       if (!headerTitle[key]) {
