@@ -122,6 +122,7 @@ module.exports = {
   },
   globals: {
     process: true,
-    $http: true
+    $http: true,
+    _vue: true
   }
 }
