@@ -7,6 +7,8 @@ import navs from './modules/navs';
 
 import getters from './getters';
 
+import vuexToLocalStorage from '@/utils/vuexCache';
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -15,6 +17,7 @@ export default new Vuex.Store({
     permit,
     navs
   },
-  getters
+  getters,
+  plugins: [vuexToLocalStorage]
 });
 
