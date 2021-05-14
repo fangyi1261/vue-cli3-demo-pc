@@ -143,3 +143,186 @@ export function throttle(fn, threshold=250) {
     }
   }
 }
+
+// //对称二叉树
+// const symmetricalTree = {
+//   val: 8,
+//   left: {
+//     val: 6,
+//     left: { val: 5, left: null, right: null },
+//     right: { val: 7, left: null, right: null }
+//   },
+//   right: {
+//     val: 6,
+//     left: { val: 7, left: null, right: null },
+//     right: { val: 5, left: null, right: null }
+//   }
+// }
+// //非对称二叉树
+// const binaryTree = {
+//   val: 8,
+//   left: {
+//     val: 6,
+//     left: { val: 5, left: null, right: null },
+//     right: { val: 7, left: null, right: null }
+//   },
+//   right: {
+//     val: 9,
+//     left: { val: 7, left: null, right: null },
+//     right: { val: 5, left: null, right: null }
+//   }
+// }
+// 判断是不是对称二叉树
+export function isSymmetric(rootNode) {
+  const isSymmetricalTree  = function(node1, node2) {
+    if (!node1 && !node2) {
+      return true;
+    }
+    if (!node1 || !node2) {
+      return false;
+    }
+    if (node1.val !== node2.val) {
+      return false;
+    }
+    return isSymmetricalTree(node1.left, node2.right) && isSymmetricalTree(node1.right, node2.left);
+  };
+  return isSymmetricalTree(rootNode, rootNode);
+}
+
+/**
+ * 快速排序（二分法排序）
+ * @param {*} arr 目标数组
+ * @returns 返回排序后的数组
+ */
+export function quickSort(arr=[]) {
+  if (arr.length <= 1) {
+    return arr;
+  }
+  const index = Math.floor(arr.length/2);
+  const temp = arr.splice(index, 1);
+  let left = [], right = [];
+  arr.forEach(item => {
+    if (item < temp) {
+      left.push(item);
+    }
+    if (item >= temp) {
+      right.push(item);
+    }
+  })
+  return quickSort(left).concat(temp, quickSort(right));
+}
+
+/**
+ * 在给定数组中找到两个数，和是给定大小
+ * @param arr 目标数组
+ * @param target 目标和
+ * @returns 返回对应下标
+ */
+
+export function twoSum(arr, target) {
+  // 方法一
+  // for(let i = 0; i < arr.length - 1; i++) {
+  //   for(let j = i + 1; j < arr.length; j++) {
+  //     if (arr[i] + arr[j] === target) {
+  //       return [i, j];
+  //     }
+  //   }
+  // }
+  // return [];
+
+  // 方法二
+  // let hasMap = new Map();
+  // for(let i = 0; i < arr.length; i++) {
+  //   if (hasMap.has(target - arr[i])) {
+  //     return [hasMap.get(target - arr[i]), i];
+  //   } else {
+  //     hasMap.set(arr[i], i);
+  //   }
+  // }
+  // return [];
+
+  // 方法三
+  let obj = {};
+  for (let i = 0; i < arr.length; i++) {
+    if (obj[arr[i]] !== undefined) {
+      return [arr[i], obj[arr[i]]];
+    } else {
+      obj[target - arr[i]] = arr[i];
+    }
+  }
+  return [];
+}
+
+// 原生网络请求
+export const ajax = {
+  get: function(url, callback) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', url, false);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200 || xhr.status === 304) {
+          console.log(xhr.responseText)
+          callback(xhr.responseText);
+        }
+      }
+    }
+    xhr.send();
+  },
+  post: function(url, data, callback) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', url, false);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200 || xhr.status === 304) {
+          console.log(xhr.responseText)
+          callback(xhr.responseText);
+        }
+      }
+    }
+    xhr.send(JSON.stringify(data));
+  },
+}
+
+export const http = {
+  get: function(url) {
+    return new Promise((resolve, reject) => {
+      const handler = function() {
+        if (this.readyState !== 4) {
+          return false;
+        }
+        if (this.status === 200 || this.status === 304) {
+          resolve(this.response);
+        } else {
+          reject(new Error(this.statusText))
+        }
+      }
+      const client = new XMLHttpRequest();
+      client.open('GET', url);
+      client.onreadystatechange = handler;
+      client.responseType = 'json';
+      client.setRequestHeader('Accept', 'application/json');
+      client.send();
+    })
+  },
+  post: function(url, data) {
+    return new Promise((resolve, reject) => {
+      const handler = function() {
+        if (this.readyState !== 4) {
+          return false;
+        }
+        if (this.status === 200 || this.status === 304) {
+          resolve(this.response);
+        } else {
+          reject(new Error(this.statusText))
+        }
+      }
+      const client = new XMLHttpRequest();
+      client.open('POST', url);
+      client.onreadystatechange = handler;
+      client.responseType = 'json';
+      client.setRequestHeader('Accept', 'application/json');
+      client.send(JSON.stringify(data));
+    })
+  }
+}
